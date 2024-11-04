@@ -25,7 +25,7 @@
             "App\\": "app/",
             "Database\\Seeders\\": "database/seeders/",
 
-            "Core\\":"src/"
+            "Kitchen\\":"src/Kitchen"
         }
     },
     "autoload-dev": {

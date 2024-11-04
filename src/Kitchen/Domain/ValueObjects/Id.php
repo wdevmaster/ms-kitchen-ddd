@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Kitchen\Domain\ValueObjects;
+namespace Kitchen\Domain\ValueObjects;
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;

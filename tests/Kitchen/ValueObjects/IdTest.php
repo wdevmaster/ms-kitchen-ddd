@@ -2,7 +2,7 @@
 
 namespace Tests\Kitchen\ValueObjects;
 
-use Core\Kitchen\Domain\ValueObjects\Id;
+use Kitchen\Domain\ValueObjects\Id;
 use Tests\TestCase;
 
 use Ramsey\Uuid\Uuid;

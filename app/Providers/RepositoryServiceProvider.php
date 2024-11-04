@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-use Core\Kitchen\Domain\Repositories AS Domain;
-use Core\Kitchen\Infrastructure\Persistence\Repositories AS Infrastructure;
+use Kitchen\Domain\Repositories AS DomainKitchen;
+use Kitchen\Infrastructure\Persistence\Repositories AS InfrastructureKitchen;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
