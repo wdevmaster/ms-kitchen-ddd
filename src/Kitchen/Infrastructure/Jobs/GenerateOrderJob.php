@@ -24,11 +24,12 @@ class GenerateOrderJob implements ShouldQueue
      */
     public function handle(ProcessGenerateOrderService $processGenerateOrderService): void
     {
-        try {
-            $processGenerateOrderService->__invoke($this->request);
-        } catch (\Exception $e) {
-            $logChannel = Log::build([ 'driver' => 'single', 'path' => storage_path('logs/jobs.log')]);
-            Log::stack([$logChannel])->error('GenerateOrderJob => Error processing generate order: ' . $e->getMessage(), ['exception' => $e]);
-        }
+        $logChannel = Log::build([ 'driver' => 'single', 'path' => storage_path('logs/jobs.log')]);
+
+
+        Log::stack([$logChannel])->debug('GenerateOrderJob::dispatch -------------------------------------------------------------------------');
+        Log::stack([$logChannel])->debug('ProcessGenerateOrderService::request', $this->request);
+        $processGenerateOrderService->__invoke($this->request);
+        Log::stack([$logChannel])->debug('ProcessGenerateOrderService::end -------------------------------------------------------------------');
     }
 }

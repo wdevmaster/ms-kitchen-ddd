@@ -22,11 +22,17 @@ class ProcessOrderJob implements ShouldQueue
      */
     public function handle(): void
     {
-        try {
-            Log::debug('ProcessOrderJob', $this->request);
-        } catch (\Exception $e) {
-            $logChannel = Log::build([ 'driver' => 'single', 'path' => storage_path('logs/jobs.log')]);
-            Log::stack([$logChannel])->error('ProcessOrderJob => Error processing order: ' . $e->getMessage(), ['exception' => $e]);
-        }
+        $logChannel = Log::build([ 'driver' => 'single', 'path' => storage_path('logs/jobs.log')]);
+
+        Log::stack([$logChannel])->debug('ProcessOrderJob::dispatch -------------------------------------------------------------------------');
+        Log::stack([$logChannel])->debug('ProcessOrderService::request', $this->request);
+        Log::stack([$logChannel])->debug('ProcessOrderService::end --------------------------------------------------------------------------');
+
+        // try {
+        //     Log::stack([$logChannel])->debug('ProcessOrderJob', $this->request);
+        // } catch (\Exception $e) {
+        //     $logChannel = Log::build([ 'driver' => 'single', 'path' => storage_path('logs/services.log')]);
+        //     Log::stack([$logChannel])->error('ProcessOrderJob => Error processing order: ' . $e->getMessage(), ['exception' => $e]);
+        // }
     }
 }

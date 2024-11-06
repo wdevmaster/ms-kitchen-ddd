@@ -21,7 +21,7 @@ class OrderStatus
     public function __construct(
         private int $value
     ) {
-        if ($value < 1 || $value > 4) {
+        if ($value < 0 || $value > 4) {
             throw new \InvalidArgumentException('Invalid status value');
         }
 
