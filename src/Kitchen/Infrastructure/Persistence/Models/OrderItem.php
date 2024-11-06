@@ -12,7 +12,7 @@ class OrderItem extends Model
     protected $primaryKey = ['dish_id', 'order_id'];
     public $incrementing = false;
 
-    protected $table = 'kitchen__order_items';
+    protected $table = 'order_items';
 
     protected $fillable = [
         'dish_id',

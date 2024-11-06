@@ -9,7 +9,7 @@ class Ingredient extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $table = 'kitchen__ingredients';
+    protected $table = 'ingredients';
 
     protected $fillable = ['name'];
 

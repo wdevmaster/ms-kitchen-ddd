@@ -11,7 +11,7 @@ class Dish extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $table = 'kitchen__dish';
+    protected $table = 'dish';
 
     protected $fillable = ['name'];
 
@@ -23,7 +23,7 @@ class Dish extends Model
     {
         return $this->belongsToMany(
             Ingredient::class,
-            'kitchen__dish_ingredients'
+            'dish_ingredients'
         )->withPivot('quantity');
     }
 }

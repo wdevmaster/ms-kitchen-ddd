@@ -12,7 +12,7 @@ class Order extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $table = 'kitchen__orders';
+    protected $table = 'orders';
 
     protected $fillable = [
         'status',
