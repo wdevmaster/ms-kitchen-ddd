@@ -16,18 +16,17 @@ use Kitchen\Application\OrderControl;
 use Kitchen\Application\Helpers\DishTransformer;
 use Kitchen\Application\Helpers\OrderTransformer;
 
-use Kitchen\Infrastructure\Services\ProcessGenerateOrderService;
+use Kitchen\Infrastructure\Services\ProcessOrderService;
 
-use App\Jobs\IngredientsRequest;
 use PHPUnit\Framework\MockObject\MockObject;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
-class ProcessGenerateOrderServiceTest extends TestCase
+class ProcessOrderServiceTest extends TestCase
 {
     private MockObject $orderRepository;
     private MockObject $dishRepository;
-    private ProcessGenerateOrderService $processOrderRequestService;
+    private ProcessOrderService $processOrderService;
 
     public function setUp(): void
     {
@@ -36,7 +35,7 @@ class ProcessGenerateOrderServiceTest extends TestCase
         $this->orderRepository = $this->createMock(OrderRepository::class);
         $this->dishRepository = $this->createMock(DishRepository::class);
 
-        $this->processOrderRequestService = new ProcessGenerateOrderService(
+        $this->processOrderService = new ProcessOrderService(
             new OrderControl(
                 new FindOrder(
                     $this->orderRepository,
@@ -94,14 +93,6 @@ class ProcessGenerateOrderServiceTest extends TestCase
             ]
         ];
 
-        $this->dishRepository
-            ->expects($this->once())
-            ->method('rand')
-            ->with($limit)
-            ->willReturn(array_map(function($row) {
-                return (new DishTransformer())->_encode($row);
-            }, $data));
-
         return $data;
     }
 
@@ -126,6 +117,12 @@ class ProcessGenerateOrderServiceTest extends TestCase
 
         $this->orderRepository
             ->expects($this->once())
+            ->method('find')
+            ->willReturnCallback(function ($uuid) use ($order) {
+                return $order;
+            });
+
+        $this->orderRepository
             ->method('findWithoutWith')
             ->willReturnCallback(function ($uuid) use ($order) {
                 $order->setStatus(new OrderStatus(OrderStatus::PROCESSED));
@@ -134,23 +131,57 @@ class ProcessGenerateOrderServiceTest extends TestCase
 
         $ingredients = (new GetIngredientsRequest())->__invoke($order);
 
+        $this->orderRepository
+            ->method('findWithoutWith')
+            ->willReturnCallback(function ($uuid) use ($order) {
+                $order->setStatus(new OrderStatus(OrderStatus::COMPLETED));
+                return $order;
+            });
+
         return [
             'orderId' => $orderId,
             'ingredients' => $ingredients
         ];
     }
 
-    public function test_ProcessOrder()
+    public function test_SuccessfulOrderProcessing()
     {
         $dataDishes = $this->setUpDataDish();
-        $this->setUpDataOrder($dataDishes);
+        $request = $this->setUpDataOrder($dataDishes);
 
-        Queue::fake();
+        $result = $this->processOrderService->__invoke($request);
+        $this->assertEquals(true, $result);
+    }
 
-        $this->processOrderRequestService->__invoke([
-            'number_dishes' => 1
-        ]);
+    public function test_FailedOrderProcessingDueToMissingIngredients()
+    {
+        $dataDishes = $this->setUpDataDish();
+        $request = array_merge(
+            $this->setUpDataOrder($dataDishes),
+            ["ingredients" =>  [
+                [
+                    "id" => "1dac19de-b82e-4bdc-ae9c-1df102bc650a",
+                    "name" => "onion",
+                    "quantity" => 2,
+                ],
+                [
+                    "id" => "6534eb3a-6b3e-4d72-b6b0-dfa407d258d8",
+                    "name" => "lettuce",
+                    "quantity" => 2,
+                ],
+                [
+                    "id" => "ace314b1-02e8-42b6-a083-e423c2d792fa",
+                    "name" => "lemon",
+                    "quantity" => 1,
+                ],
+                [
+                    "id" => "b4e8e299-fe86-46db-9760-e90d1fd040fb",
+                    "name" => "tomato",
+                    "quantity" => 6,
+                ]
+            ]]);
 
-        Queue::assertPushed(IngredientsRequest::class);
+        $result = $this->processOrderService->__invoke($request);
+        $this->assertEquals(false, $result);
     }
 }
