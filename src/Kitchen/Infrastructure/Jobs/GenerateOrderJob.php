@@ -2,11 +2,13 @@
 
 namespace Kitchen\Infrastructure\Jobs;
 
+use Kitchen\Infrastructure\Services\ProcessGenerateOrderService;
+
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 
-class ProcessOrderJob implements ShouldQueue
+class GenerateOrderJob implements ShouldQueue
 {
     use Queueable;
 
@@ -20,13 +22,13 @@ class ProcessOrderJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(ProcessGenerateOrderService $processGenerateOrderService): void
     {
         try {
-            Log::debug('ProcessOrderJob', $this->request);
+            $processGenerateOrderService->__invoke($this->request);
         } catch (\Exception $e) {
             $logChannel = Log::build([ 'driver' => 'single', 'path' => storage_path('logs/jobs.log')]);
-            Log::stack([$logChannel])->error('ProcessOrderJob => Error processing order: ' . $e->getMessage(), ['exception' => $e]);
+            Log::stack([$logChannel])->error('GenerateOrderJob => Error processing generate order: ' . $e->getMessage(), ['exception' => $e]);
         }
     }
 }

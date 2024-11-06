@@ -10,6 +10,6 @@ interface DishRepository {
 
     public function find(String $uuid): Dish|Null;
 
-    public function rand(Int $limit = 1): Array;
+    public function rand(Int $limit = 1): Array|Null;
 
 }

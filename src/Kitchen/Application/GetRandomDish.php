@@ -13,6 +13,7 @@ class GetRandomDish
     public function __invoke(Int $limit): Array
     {
         $dishes = $this->dishRepository->rand($limit);
+
         if (empty($dishes)) {
             throw new \Exception("No dishes found");
         }

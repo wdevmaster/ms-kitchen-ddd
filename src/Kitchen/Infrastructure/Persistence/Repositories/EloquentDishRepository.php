@@ -33,14 +33,14 @@ class EloquentDishRepository implements DishRepository
         }
     }
 
-    public function rand(Int $limit = 1): Array
+    public function rand(Int $limit = 1): Array|Null
     {
         try {
-            $rows = Model::inRandomOrder()->limit($limit)->get();
+            $rows = Model::with('ingredients')->inRandomOrder()->limit($limit)->get();
 
             return array_map(function($row) {
                 return (new DishTransformer())->_encode($row);
-            }, $rows);
+            }, $rows->toArray());
         } catch (ModelNotFoundException $e) {
             return null;
         }
