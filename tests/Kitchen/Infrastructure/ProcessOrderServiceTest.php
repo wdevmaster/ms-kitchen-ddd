@@ -1,6 +1,6 @@
 <?php
 
-namespace Kitchen\Infrastructure;
+namespace Tests\Kitchen\Infrastructure;
 
 use Kitchen\Domain\ValueObjects\Id;
 use Kitchen\Domain\ValueObjects\OrderStatus;

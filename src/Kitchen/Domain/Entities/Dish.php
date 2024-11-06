@@ -32,4 +32,17 @@ class Dish
     {
         $this->ingredients[] = $item;
     }
+
+    public function toArray(): Array
+    {
+        $ingredients = array_map(function ($items) {
+            return $items->toArray();
+        }, $this->getIngredients());
+
+        return [
+            'id' => $this->getId()->getValue()->toString(),
+            'name' => $this->getName(),
+            'ingredients' => $ingredients
+        ];
+    }
 }

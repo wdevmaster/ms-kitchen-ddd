@@ -12,12 +12,13 @@ class Order
     public function __construct(
         private Id $id,
         protected OrderStatus $status,
+        protected ?String $createdAt = null,
         protected Array $items = []
     ){}
 
-    public static function create(Id $id, OrderStatus $status): self
+    public static function create(Id $id, OrderStatus $status, $createdAt = null): self
     {
-        return new self($id, $status);
+        return new self($id, $status, $createdAt);
     }
 
     public function getId(): Id
@@ -43,5 +44,20 @@ class Order
     public function addItem(OrderItem $item): Void
     {
         $this->items[] = $item;
+    }
+
+    public function toArray(): Array
+    {
+        $items = array_map(function ($items) {
+            return $items->toArray();
+        }, $this->getItems());
+
+        return [
+            'id' => $this->getId()->getValue()->toString(),
+            'status' => $this->getStatus()->toString(),
+            'items' => $items,
+            'created_at' => $this->createdAt
+        ];
+
     }
 }

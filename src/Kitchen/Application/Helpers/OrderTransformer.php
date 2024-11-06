@@ -29,6 +29,7 @@ class OrderTransformer
         $order = Order::create(
             $id,
             $status,
+            isset($params['created_at']) ? $params['created_at'] : null
         );
 
         $dishTransformer = new DishTransformer();

@@ -17,11 +17,11 @@ class EloquentDishRepository implements DishRepository
 {
     public function all(): Array
     {
-        $rows = [];
+        $rows = Model::with('ingredients')->get();
 
         return array_map(function($row) {
             return (new DishTransformer())->_encode($row);
-        }, $rows);
+        }, $rows->toArray());
     }
 
     public function find(String $uuid): Dish|Null

@@ -4,9 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-use Warehouse\Domain\Repositories AS DomainWarehouse;
-use Warehouse\Infrastructure\Persistence\Repositories AS InfrastructureRepositories;
-
 use Kitchen\Domain\Repositories AS DomainKitchen;
 use Kitchen\Infrastructure\Persistence\Repositories AS InfrastructureKitchen;
 
