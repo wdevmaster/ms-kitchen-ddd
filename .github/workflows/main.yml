@@ -1,11 +1,11 @@
-name: ms-warehouse-deployment
+name: Deploy to Elastic Beanstalk
 
 on:
   pull_request:
     branches: [ "main" ]
 
 jobs:
-  phpunit:
+  PHPUnit:
     name: PHPUnit
     runs-on: ubuntu-latest
     steps:
@@ -30,3 +30,23 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: php artisan test
+
+  Deploy:
+    needs: PHPUnit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create ZIP deployment package
+        run: zip -r deploy.zip ./
+
+      - name: Deploy to AWS Elastic BeanTalk
+        uses: einaregilsson/beanstalk-deploy@v20
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: ALEGRA-TEST
+          environment_name: ms-kitchen-env
+          region: ${{ secrets.AWS_REGION }}
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip

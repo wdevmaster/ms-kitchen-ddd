@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use App\Jobs\IngredientsRequest;
+use Kitchen\Infrastructure\Jobs\GenerateOrderJob;
 
 class DispatchOrderRequest extends Command
 {
@@ -13,7 +13,7 @@ class DispatchOrderRequest extends Command
      *
      * @var string
      */
-    protected $signature = 'app:dispatch-order';
+    protected $signature = 'app:generate-order';
 
     /**
      * The console command description.
@@ -27,8 +27,8 @@ class DispatchOrderRequest extends Command
      */
     public function handle()
     {
-        IngredientsRequest::dispatch([
-            'ms-kitchen' => 1
+        GenerateOrderJob::dispatch([
+            'number_dishes' => 1
         ]);
     }
 }

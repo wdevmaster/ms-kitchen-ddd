@@ -41,6 +41,7 @@
                     </header>
                     <footer class="pb-16 text-center text-sm text-black dark:text-white/70">
                         {{ strtoupper(env('APP_NAME')) }} <br>
+                        {{ DB::connection()->getDatabaseName() ? "Connected to database ".DB::connection()->getDatabaseName() : '' }} <br>
                         Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
                     </footer>
                 </div>
