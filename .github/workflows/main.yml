@@ -1,4 +1,4 @@
-name: ms-warehouse-deployment
+name: Deploy to Elastic Beanstalk
 
 on:
   pull_request:
@@ -32,6 +32,7 @@ jobs:
       run: php artisan test
 
   Deploy:
+    needs: PHPUnit
     runs-on: ubuntu-latest
 
     steps:
