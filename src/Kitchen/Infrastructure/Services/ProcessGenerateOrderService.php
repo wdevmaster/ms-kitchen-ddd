@@ -7,12 +7,13 @@ use Kitchen\Domain\ValueObjects\OrderStatus;
 use Kitchen\Application\OrderControl;
 use Kitchen\Application\GetIngredientsRequest;
 
-use App\Jobs\IngredientsRequest;
+use App\Services\AWS\EventPublisher;
 use Illuminate\Support\Facades\Log;
 
 class ProcessGenerateOrderService
 {
     public function __construct(
+        private EventPublisher $event,
         protected OrderControl $orderControl,
         protected GetIngredientsRequest $getIngredientsRequest,
     )
@@ -27,10 +28,10 @@ class ProcessGenerateOrderService
 
             $ingredients = $this->getIngredientsRequest->__invoke($order);
 
-            IngredientsRequest::dispatch([
+            $result = $this->event->publish('ingredients.request', [
                 'orderId' => $order->getId()->getValue()->toString(),
                 'ingredients' => $ingredients
-            ])->onQueue('bus-ms');
+            ]);
         } catch (\Exception $e) {
             $this->orderControl->updateStatus($order, OrderStatus::CANCELD);
 

@@ -18,15 +18,19 @@ use Kitchen\Application\Helpers\OrderTransformer;
 
 use Kitchen\Infrastructure\Services\ProcessGenerateOrderService;
 
-use App\Jobs\IngredientsRequest;
+use Aws\Sns\SnsClient;
+use Illuminate\Config\Repository;
+use App\Services\AWS\EventPublisher;
+
 use PHPUnit\Framework\MockObject\MockObject;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
-
+use Mockery;
 class ProcessGenerateOrderServiceTest extends TestCase
 {
     private MockObject $orderRepository;
     private MockObject $dishRepository;
+    private MockObject $eventPublisher;
     private ProcessGenerateOrderService $processOrderRequestService;
 
     public function setUp(): void
@@ -35,8 +39,10 @@ class ProcessGenerateOrderServiceTest extends TestCase
 
         $this->orderRepository = $this->createMock(OrderRepository::class);
         $this->dishRepository = $this->createMock(DishRepository::class);
+        $this->eventPublisher = $this->createMock(EventPublisher::class);
 
         $this->processOrderRequestService = new ProcessGenerateOrderService(
+            $this->eventPublisher,
             new OrderControl(
                 new FindOrder(
                     $this->orderRepository,
@@ -145,12 +151,13 @@ class ProcessGenerateOrderServiceTest extends TestCase
         $dataDishes = $this->setUpDataDish();
         $this->setUpDataOrder($dataDishes);
 
-        Queue::fake();
+
+        $this->eventPublisher
+            ->expects($this->once())
+            ->method('publish');
 
         $this->processOrderRequestService->__invoke([
             'number_dishes' => 1
         ]);
-
-        Queue::assertPushed(IngredientsRequest::class);
     }
 }
