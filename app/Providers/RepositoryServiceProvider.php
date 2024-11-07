@@ -22,6 +22,9 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        #Kitchen
+        $this->app->bind(DomainKitchen\DishRepository::class, InfrastructureKitchen\EloquentDishRepository::class);
+        $this->app->bind(DomainKitchen\OrderRepository::class, InfrastructureKitchen\EloquentOrderRepository::class);
 
     }
 }

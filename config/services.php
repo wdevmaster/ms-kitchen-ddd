@@ -24,6 +24,16 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'sns' => [
+        'credentials' => [
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        ],
+        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+        'version' => env('AWS_SNS_VERSION', 'latest'),
+        'topic' => env('AWS_SNS_TOPIC'),
+    ],
+
     'resend' => [
         'key' => env('RESEND_KEY'),
     ],

@@ -1,15 +1,21 @@
-name: ms-warehouse-deployment
+name: CI/CD for Pull Request and Deploy
 
 on:
+  # Ejecuta el trabajo de pruebas en cada actualización de un Pull Request hacia la rama main
   pull_request:
     branches: [ "main" ]
 
+  # Ejecuta el despliegue solo cuando haya un push en la rama main
+  push:
+    branches: [ "main" ]
+
 jobs:
-  phpunit:
-    name: PHPUnit
+  # Trabajo para ejecutar pruebas en el Pull Request
+  PHPUnit:
+    name: Run Tests on Pull Request
     runs-on: ubuntu-latest
     steps:
-    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+    - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
     - uses: actions/checkout@v4
@@ -30,3 +36,39 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: php artisan test
+
+  # Trabajo para el despliegue, que solo se ejecuta al hacer push en la rama main
+  Deploy:
+    name: Deploy to Elastic Beanstalk
+    needs: PHPUnit
+    if: github.ref == 'refs/heads/main'  # Solo ejecuta este trabajo en la rama main
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - uses: actions/checkout@v4
+      - name: Install PHP dependencies
+        run: composer install --optimize-autoloader --no-dev
+
+      - name: Cache configuration
+        run: php artisan config:cache
+      - name: Cache routes
+        run: php artisan route:cache
+
+
+      - uses: actions/checkout@v2
+      - name: Create ZIP deployment package
+        run: zip -r deploy.zip ./ -x ".git/*" "tests/*" ".github/*" ".env" ".env.example"
+
+      - name: Deploy to AWS Elastic BeanTalk
+        uses: einaregilsson/beanstalk-deploy@v20
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: ${{ secrets.AWS_APPLICATION_NAME }}
+          environment_name: ${{ secrets.AWS_ENVIRONMENT_NAME }}
+          region: ${{ secrets.AWS_REGION }}
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip
