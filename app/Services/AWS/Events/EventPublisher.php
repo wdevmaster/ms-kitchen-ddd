@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\AWS;
+namespace App\Services\AWS\Events;
 
 use Aws\Sns\SnsClient;
 
@@ -41,7 +41,8 @@ class EventPublisher implements EventPublisherInterface
 
             return $response['@metadata']['statusCode'] == 200;
         } catch (AwsException $e) {
-            return $e->getMessage();
+            Log::error($e->getMessage(), ['exception' => $e]);
+            return false;
         }
     }
 }

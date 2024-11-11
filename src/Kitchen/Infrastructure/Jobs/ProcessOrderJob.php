@@ -27,8 +27,13 @@ class ProcessOrderJob implements ShouldQueue
         $logChannel = Log::build([ 'driver' => 'single', 'path' => storage_path('logs/jobs.log')]);
 
         Log::stack([$logChannel])->debug('ProcessOrderJob::dispatch -------------------------------------------------------------------------');
-        Log::stack([$logChannel])->debug('ProcessOrderService::request', $this->request);
-        $processOrderService->__invoke($this->request);
-        Log::stack([$logChannel])->debug('ProcessOrderService::end --------------------------------------------------------------------------');
+        Log::stack([$logChannel])->debug('ProcessOrderJob::request', $this->request);
+        try {
+            Log::stack([$logChannel])->debug('ProcessOrderJob::Success -------------------------------------------------------------------------');
+            $processOrderService->__invoke($this->request);
+        } catch (\Throwable $th) {
+            Log::stack([$logChannel])->error($th->getMessage(), ['exception' => $th]);
+        }
+        Log::stack([$logChannel])->debug('ProcessOrderJob::end --------------------------------------------------------------------------');
     }
 }

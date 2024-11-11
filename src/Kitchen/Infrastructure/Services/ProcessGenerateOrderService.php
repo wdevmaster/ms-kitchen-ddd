@@ -7,7 +7,7 @@ use Kitchen\Domain\ValueObjects\OrderStatus;
 use Kitchen\Application\OrderControl;
 use Kitchen\Application\GetIngredientsRequest;
 
-use App\Services\AWS\EventPublisher;
+use App\Services\AWS\Events\EventPublisher;
 use Illuminate\Support\Facades\Log;
 
 class ProcessGenerateOrderService
@@ -28,7 +28,7 @@ class ProcessGenerateOrderService
 
             $ingredients = $this->getIngredientsRequest->__invoke($order);
 
-            $result = $this->event->publish('ingredients.request', [
+            return $this->event->publish('ingredients.request', [
                 'orderId' => $order->getId()->getValue()->toString(),
                 'ingredients' => $ingredients
             ]);
