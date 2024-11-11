@@ -20,4 +20,5 @@ yarn-error.log
 /.idea
 /.vscode
 /.zed
-fpm-php.log
+*.log
+*.zip
