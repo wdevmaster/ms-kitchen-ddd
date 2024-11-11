@@ -30,17 +30,24 @@
                         </div>
                             <nav class="-mx-3 flex flex-1 justify-end">
 
-                                    {{-- <a
-                                        href="{{ route('orders.index') }}"
-                                        class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                    >
-                                        List Orders
-                                    </a> --}}
+                                <a
+                                    href="{{ route('orders.index') }}"
+                                    class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                >
+                                    List Orders
+                                </a>
+
+                                <a
+                                    href="{{ route('dishes.index') }}"
+                                    class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                >
+                                    List Dishes
+                                </a>
 
                             </nav>
                     </header>
                     <footer class="pb-16 text-center text-sm text-black dark:text-white/70">
-                        {{ strtoupper(env('APP_NAME')) }} <br>
+                        {{ strtoupper(env('APP_NAME')) }} v0.0.1<br>
                         {{ DB::connection()->getDatabaseName() ? "Connected to database ".DB::connection()->getDatabaseName() : '' }} <br>
                         Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
                     </footer>
