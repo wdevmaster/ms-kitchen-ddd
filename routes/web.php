@@ -12,14 +12,14 @@ Route::get('/', function () {
 Route::prefix('api')->group(function () {
 
     Route::controller(OrderKitchenController::class)->group(function () {
-        Route::get('/orders', 'index');
-        Route::get('/order/{uuid}', 'show');
+        Route::get('/orders', 'index')->name('orders.index');
+        Route::get('/order/{uuid}', 'show')->name('order.show');
 
         Route::post('/order/store', 'store');
     });
 
     Route::controller(DishController::class)->group(function () {
-        Route::get('/dishes', 'index');
+        Route::get('/dishes', 'index')->name('dishes.index');
     });
 
 });

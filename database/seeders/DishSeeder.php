@@ -16,6 +16,11 @@ class DishSeeder extends Seeder
      */
     public function run(): void
     {
+        if (Dish::exists()) {
+            $this->command->info('La tabla ya contiene datos. No se insertará nada.');
+            return;
+        }
+
         $rows = [
             [
                 'name' => 'Meat Curry',

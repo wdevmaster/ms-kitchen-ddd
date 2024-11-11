@@ -15,6 +15,11 @@ class IngredientSeeder extends Seeder
      */
     public function run(): void
     {
+        if (KitchenIngredient::exists()) {
+            $this->command->info('La tabla ya contiene datos. No se insertará nada.');
+            return;
+        }
+
         $rows = [
             [
                 'id' => '0851cd7d-ca31-46ee-8f08-21f5e4c02636',
