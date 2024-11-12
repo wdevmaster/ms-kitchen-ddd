@@ -63,6 +63,18 @@ return [
             'after_commit' => false,
         ],
 
+        'event-queue' => [
+            'driver' => 'event-queue',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'queue' => env('SQS_QUEUE_EVENTS', 'default'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+            'version' => env('AWS_SNS_VERSION', 'latest'),
+            'routes' => [
+                'ingredients.dispatch' => \Kitchen\Infrastructure\Jobs\ProcessOrderJob::class,
+            ],
+        ],
+
         'redis' => [
             'driver' => 'redis',
             'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),

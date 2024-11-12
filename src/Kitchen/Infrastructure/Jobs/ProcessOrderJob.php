@@ -13,27 +13,33 @@ class ProcessOrderJob implements ShouldQueue
     use Queueable;
 
     /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 5;
+
+    public String $subject;
+    public Array $payload;
+    /**
      * Create a new job instance.
      */
-    public function __construct(
-        public Array $request
-    ){}
+    public function __construct(String $subject, Array $payload){
+
+        $this->subject = $subject;
+        $this->payload = $payload;
+
+        Log::info('ProcessOrderJob::__construct', [
+            'subject' => $this->subject,
+            'payload' => $this->payload,
+        ]);
+    }
 
     /**
      * Execute the job.
      */
     public function handle(ProcessOrderService $processOrderService): void
     {
-        $logChannel = Log::build([ 'driver' => 'single', 'path' => storage_path('logs/jobs.log')]);
-
-        Log::stack([$logChannel])->debug('ProcessOrderJob::dispatch -------------------------------------------------------------------------');
-        Log::stack([$logChannel])->debug('ProcessOrderJob::request', $this->request);
-        try {
-            Log::stack([$logChannel])->debug('ProcessOrderJob::Success -------------------------------------------------------------------------');
-            $processOrderService->__invoke($this->request);
-        } catch (\Throwable $th) {
-            Log::stack([$logChannel])->error($th->getMessage(), ['exception' => $th]);
-        }
-        Log::stack([$logChannel])->debug('ProcessOrderJob::end --------------------------------------------------------------------------');
+        $processOrderService->__invoke($this->payload);
     }
 }
