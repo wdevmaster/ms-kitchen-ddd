@@ -58,12 +58,13 @@ ADD ./docker/nginx/default.conf /etc/nginx/conf.d/
 ADD ./docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 
 COPY ./docker/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN ln -s /usr/local/bin/entrypoint.sh /
 
 RUN mkdir -p /var/log/supervisor
 RUN mkdir -p /var/log/nginx
 RUN mkdir -p /var/cache/nginx
 
-RUN chown -R www-data.www-data /var/log/supervisor
 RUN chown -R www-data.www-data /var/log/nginx
 RUN chown -R www-data.www-data /var/cache/nginx
 
@@ -79,4 +80,4 @@ RUN touch /var/run/nginx.pid && \
 RUN chown -R www-data.www-data /var/log/supervisor
 
 EXPOSE 80
-CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+ENTRYPOINT ["entrypoint.sh"]
