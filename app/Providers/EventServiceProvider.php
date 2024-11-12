@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-use App\Services\AWS\EventPublisherInterface;
-use App\Services\AWS\EventPublisher;
+use App\Services\AWS\Events\EventPublisherInterface;
+use App\Services\AWS\Events\EventPublisher;
 
 use Aws\Sns\SnsClient;
 

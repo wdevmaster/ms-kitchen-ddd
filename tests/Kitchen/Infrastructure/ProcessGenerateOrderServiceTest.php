@@ -20,7 +20,7 @@ use Kitchen\Infrastructure\Services\ProcessGenerateOrderService;
 
 use Aws\Sns\SnsClient;
 use Illuminate\Config\Repository;
-use App\Services\AWS\EventPublisher;
+use App\Services\AWS\Events\EventPublisher;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use Illuminate\Support\Facades\Queue;

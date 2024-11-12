@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\AWS;
+namespace App\Services\AWS\Events;
 
 interface EventPublisherInterface
 {
