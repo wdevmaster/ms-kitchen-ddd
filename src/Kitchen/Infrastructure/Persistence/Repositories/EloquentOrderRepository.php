@@ -19,7 +19,8 @@ class EloquentOrderRepository implements OrderRepository
 {
     public function all(): Array
     {
-        $rows = Model::orderBy('created_at', 'desc')->get();
+        $rows = Model::with('items.dish.ingredients')
+        ->orderBy('created_at', 'desc')->get();
 
         return array_map(function($row) {
             return (new OrderTransformer())->_encode($row);
