@@ -21,11 +21,10 @@ class ProcessOrderService
 
     public function __invoke(Array $request): Bool
     {
+        $order = $this->orderControl->find($request);
+        $this->orderControl->updateStatus($order, OrderStatus::PROCESSED);
+
         try {
-            $order = $this->orderControl->find($request);
-            $this->orderControl->updateStatus($order, OrderStatus::PROCESSED);
-
-
             if (!isset($request['ingredients'])) {
                 throw new \InvalidArgumentException('Missing required parameters ingredients');
             }
